@@ -21,3 +21,15 @@ def compute_acceleration(bodies):
             acc[i][0] += G * bodies[j].mass / dist_soft**3 * r[0]  # x component
             acc[i][1] += G * bodies[j].mass / dist_soft**3 * r[1]  # y component
     return acc
+
+def leapfrog_step(bodies, dt):
+    acc = compute_acceleration(bodies)
+    for i, b in enumerate(bodies):
+        b.vel += 0.5 * acc[i] * dt # half step velocity update
+    for b in bodies:
+        b.pos += b.vel * dt # full step position update
+        b.record() # records the new position in the history
+    acc = compute_acceleration(bodies) # recompute acceleration at new positions
+    for i, b in enumerate(bodies):
+        b.vel += 0.5 * acc[i] * dt # half step velocity update
+        
